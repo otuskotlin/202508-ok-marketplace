@@ -33,6 +33,12 @@ docker {
     imageTag = "${project.version}"
 }
 
+//docker {
+//    buildContext = project.layout.buildDirectory.dir("docker-x64").get().toString()
+//    imageName = "ok-marketplace-app-ktor-x64"
+//    dockerFile = "Dockerfile"
+//}
+
 kotlin {
     // !!! Обязательно. Иначе не проходит сборка толстых джанриков в shadowJar
     jvm { withJava() }
@@ -78,6 +84,8 @@ kotlin {
                 implementation(libs.ktor.serialization.json)
 
                 // DB
+                implementation(libs.uuid)
+                implementation(projects.okMarketplaceRepoCommon)
                 implementation(projects.okMarketplaceRepoStubs)
                 implementation(projects.okMarketplaceRepoInmemory)
 
@@ -120,6 +128,8 @@ kotlin {
                 implementation(projects.okMarketplaceApiV2Kmp)
 
                 implementation("ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-logging-logback")
+                implementation(projects.okMarketplaceRepoPgjvm)
+                implementation(libs.testcontainers.postgres)
             }
         }
 
@@ -130,6 +140,9 @@ kotlin {
         }
 
         linuxX64Main {
+            dependencies {
+                implementation(projects.okMarketplaceRepoPgntv)
+            }
         }
     }
 }
