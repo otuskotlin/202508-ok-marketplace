@@ -78,6 +78,8 @@ kotlin {
                 implementation(libs.ktor.serialization.json)
 
                 // DB
+                implementation(libs.uuid)
+                implementation(projects.okMarketplaceRepoCommon)
                 implementation(projects.okMarketplaceRepoStubs)
                 implementation(projects.okMarketplaceRepoInmemory)
 
@@ -120,6 +122,8 @@ kotlin {
                 implementation(projects.okMarketplaceApiV2Kmp)
 
                 implementation("ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-logging-logback")
+                implementation(projects.okMarketplaceRepoPgjvm)
+                implementation(libs.testcontainers.postgres)
             }
         }
 
@@ -130,6 +134,9 @@ kotlin {
         }
 
         linuxX64Main {
+            dependencies {
+                implementation(projects.okMarketplaceRepoPgntv)
+            }
         }
     }
 }
@@ -160,7 +167,7 @@ tasks {
         group = "docker"
         doFirst {
             copy {
-                from("Dockerfile") //.rename { "Dockerfile" }
+                //from("Dockerfile") //.rename { "Dockerfile" }
                 from(nativeFileX64)
                 from(linuxX64ProcessResources.destinationDir)
                 println("BUILD CONTEXT: ${buildContext.get()}")
