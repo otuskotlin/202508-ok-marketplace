@@ -1,4 +1,4 @@
-rootProject.name = "ok-marketplace-libs"
+rootProject.name = "ok-marketplace-other"
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -20,11 +20,6 @@ pluginManagement {
     }
 }
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
-}
-
-include(":ok-marketplace-lib-logging-common")
-include(":ok-marketplace-lib-logging-kermit")
-include(":ok-marketplace-lib-logging-logback")
-include(":ok-marketplace-lib-logging-socket")
+include(":ok-marketplace-dcompose")
+include(":ok-marketplace-migration-pg")
+include(":ok-marketplace-migration-cs")
