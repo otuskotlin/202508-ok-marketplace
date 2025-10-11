@@ -30,7 +30,7 @@ muschko = "9.4.0"
 testcontainers = "1.21.1"
 
 # BASE
-jvm-compiler = "17"
+jvm-compiler = "21"
 jvm-language = "21"
 
 [libraries]
