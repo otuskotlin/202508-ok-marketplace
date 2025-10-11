@@ -129,6 +129,7 @@ kotlin {
 
                 implementation("ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-logging-logback")
                 implementation(projects.okMarketplaceRepoPgjvm)
+                implementation(projects.okMarketplaceRepoCassandra)
                 implementation(libs.testcontainers.postgres)
             }
         }
