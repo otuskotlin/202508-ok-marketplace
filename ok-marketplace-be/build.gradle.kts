@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.include
+
 plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
@@ -6,3 +8,23 @@ plugins {
 group = "com.otus.otuskotlin.marketplace"
 version = "0.0.1"
 
+subprojects {
+    group = rootProject.group
+    version = rootProject.version
+}
+
+tasks {
+    register("build" ) {
+        group = "build"
+        dependsOn(project(":ok-marketplace-tmp").getTasksByName("build",false))
+    }
+    register("check" ) {
+        group = "verification"
+        subprojects.forEach { proj ->
+            println("PROJ $proj")
+            proj.getTasksByName("check", false).also {
+                this@register.dependsOn(it)
+            }
+        }
+    }
+}
