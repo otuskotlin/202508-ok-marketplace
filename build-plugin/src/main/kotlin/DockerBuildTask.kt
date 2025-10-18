@@ -7,7 +7,9 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.StopExecutionException
+import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
+import javax.inject.Inject
 import kotlin.collections.forEach
 
 abstract class DockerBuildTask : DefaultTask() {
@@ -40,6 +42,11 @@ abstract class DockerBuildTask : DefaultTask() {
     @get:Optional
     abstract val removeIntermediateContainers: Property<Boolean>
 
+    interface InjectedExecOps {
+        @get:Inject
+        val execOps: ExecOperations
+    }
+
     @TaskAction
     fun build() {
         val dockerfilePath = "${buildContext.get()}/${dockerFile.get()}"
@@ -67,9 +74,9 @@ abstract class DockerBuildTask : DefaultTask() {
         }
 
         command.add(buildContext.get())
-
         val outputStream = ByteArrayOutputStream()
-        val execResult = project.exec {
+        val injected = project.objects.newInstance(InjectedExecOps::class.java)
+        val execResult = injected.execOps.exec {
             commandLine(command)
             standardOutput = outputStream
             errorOutput = outputStream
