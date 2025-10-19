@@ -12,19 +12,3 @@ subprojects {
     group = rootProject.group
     version = rootProject.version
 }
-
-tasks {
-    register("build" ) {
-        group = "build"
-        dependsOn(project(":ok-marketplace-tmp").getTasksByName("build",false))
-    }
-    register("check" ) {
-        group = "verification"
-        subprojects.forEach { proj ->
-            println("PROJ $proj")
-            proj.getTasksByName("check", false).also {
-                this@register.dependsOn(it)
-            }
-        }
-    }
-}
