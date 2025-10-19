@@ -19,9 +19,10 @@ services:
 
   opensearch:
     extends:
-      file: open-search-cluster.yml
+      file: open-search-base.yml
       service: opensearch-cluster-base
     environment:
+      - cluster.name=opensearch-cluster
       - node.name=opensearch # Name the node that will run in this container
       - discovery.seed_hosts=opensearch,opensearch2 # Nodes to look for when discovering the cluster
       - cluster.initial_cluster_manager_nodes=opensearch,opensearch2 # Nodes eligible to serve as cluster manager
@@ -33,9 +34,10 @@ services:
 
   opensearch2:
     extends:
-      file: open-search-cluster.yml
+      file: open-search-base.yml
       service: opensearch-cluster-base
     environment:
+      - cluster.name=opensearch-cluster
       - node.name=opensearch # Name the node that will run in this container
       - discovery.seed_hosts=opensearch,opensearch2 # Nodes to look for when discovering the cluster
       - cluster.initial_cluster_manager_nodes=opensearch,opensearch2 # Nodes eligible to serve as cluster manager

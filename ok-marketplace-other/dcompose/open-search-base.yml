@@ -1,14 +1,21 @@
 services:
-  opensearch-base:
-#    container_name: opensearch-base
+  opensearch-image:
     image: opensearchproject/opensearch:latest
+    environment:
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_PASS}
+
+  opensearch-base:
+    extends:
+      service:  opensearch-image
+#    container_name: opensearch-base
+#    image: opensearchproject/opensearch:latest
     environment:
       - discovery.type=single-node
       - http.port=9200
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
 #      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=adm-Password0
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_PASS}
+#      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_PASS}
     ports:
       - '9200:9200'
       - '9600:9600'
@@ -30,3 +37,7 @@ services:
         hard: 65536
     #    volumes:
     #      - opensearch-data:/usr/share/opensearch/data
+
+  opensearch-cluster-base:
+    extends:
+      service: opensearch-image
