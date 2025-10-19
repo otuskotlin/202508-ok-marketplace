@@ -45,5 +45,3 @@ publishing {
         }
     }
 }
-
-tasks["build"].dependsOn("publish")
