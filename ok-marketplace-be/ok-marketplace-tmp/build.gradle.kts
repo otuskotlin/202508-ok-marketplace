@@ -5,12 +5,25 @@ plugins {
 repositories {
     maven {
         name = "LocalRepo"
-        url = uri("${rootProject.projectDir}/../ok-marketplace-infra/build/repo") // Локальный репозиторий для примера
+        url = uri("${rootProject.projectDir}/../ok-marketplace-other/build/repo")
     }
-    mavenLocal()
-    mavenCentral()
 }
 
+print("DDDD")
+print(layout.projectDirectory.dir("../../ok-marketplace-other"))
+
+val resourcesFromLib by configurations.creating
+
 dependencies {
-    implementation("com.otus.otuskotlin.marketplace:backend-infra:0.0.1")
+    resourcesFromLib("ru.otus.otuskotlin.marketplace:dcompose:1.0:resources@zip")
 }
+
+tasks.register<Copy>("extractLibResources") {
+    from(zipTree(resourcesFromLib.singleFile))
+    into(layout.buildDirectory.dir("dcompose"))
+}
+
+tasks["build"].dependsOn("extractLibResources")
+
+
+
