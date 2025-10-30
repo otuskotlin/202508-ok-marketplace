@@ -2,8 +2,19 @@ plugins {
     kotlin("jvm")
 }
 
+repositories {
+    maven {
+        name = "LocalRepo"
+        url = uri("${rootProject.projectDir}/../ok-marketplace-other/build/repo")
+    }
+}
+
+val resourcesFromLib by configurations.creating
+
 dependencies {
     implementation(kotlin("stdlib"))
+
+    resourcesFromLib("ru.otus.otuskotlin.marketplace:dcompose:1.0:resources@zip")
 
     implementation("ru.otus.otuskotlin.marketplace:ok-marketplace-api-v1-jackson")
     implementation("ru.otus.otuskotlin.marketplace:ok-marketplace-api-v1-mappers")
@@ -29,9 +40,10 @@ var severity: String = "MINOR"
 tasks {
     withType<Test>().configureEach {
         useJUnitPlatform()
-//        dependsOn(gradle.includedBuild(":ok-marketplace-app-spring").task("dockerBuildImage"))
-//        dependsOn(gradle.includedBuild(":ok-marketplace-app-ktor").task("publishImageToLocalRegistry"))
-//        dependsOn(gradle.includedBuild(":ok-marketplace-app-rabbit").task("dockerBuildImage"))
-//        dependsOn(gradle.includedBuild(":ok-marketplace-app-kafka").task("dockerBuildImage"))
+        dependsOn("extractLibResources")
+    }
+    register<Copy>("extractLibResources") {
+        from(zipTree(resourcesFromLib.singleFile))
+        into(layout.buildDirectory.dir("dcompose"))
     }
 }

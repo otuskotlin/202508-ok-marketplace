@@ -17,8 +17,7 @@ class UUIDTestCommon : FunSpec() {
         }
 
         test("date should contains date and time") {
-            val data = currentDate().iso
-                .split("T")
+            val data = currentDate.split("T")
 
             //simple checs
             data.size shouldBe 2
