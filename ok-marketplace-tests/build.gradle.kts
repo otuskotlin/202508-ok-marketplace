@@ -25,9 +25,13 @@ ext {
 
 tasks {
     arrayOf("build", "clean", "check").forEach {tsk ->
-        create(tsk) {
+        register(tsk) {
             group = "build"
             dependsOn(subprojects.map {  it.getTasksByName(tsk,false)})
         }
+    }
+
+    register("e2eTests") {
+        dependsOn(project(":ok-marketplace-e2e-be").tasks.getByName("check"))
     }
 }
