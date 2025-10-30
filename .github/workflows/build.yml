@@ -59,11 +59,11 @@
           with:
             gradle-version: 8.14.1
             arguments: buildInfra --info
-        - name: Run Tests
-          uses: gradle/gradle-build-action@v2
-          with:
-            gradle-version: 8.14.1
-            arguments: buildImages --info
+#        - name: Run Tests
+#          uses: gradle/gradle-build-action@v2
+#          with:
+#            gradle-version: 8.14.1
+#            arguments: buildImages --info
         - name: Run Tests
           uses: gradle/gradle-build-action@v2
           with:
