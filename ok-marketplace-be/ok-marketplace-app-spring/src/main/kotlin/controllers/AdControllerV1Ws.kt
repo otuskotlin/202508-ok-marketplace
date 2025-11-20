@@ -1,13 +1,11 @@
 package ru.otus.otuskotlin.markeplace.app.spring.controllers
 
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.asFlux
-import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.WebSocketSession
@@ -27,22 +25,6 @@ class AdControllerV1Ws(private val appSettings: MkplAppSettings) : WebSocketHand
     private val sessions = appSettings.corSettings.wsSessions
 
     override fun handle(session: WebSocketSession): Mono<Void> {
-//        // Обслуживаем INIT логику
-//
-//        // Получаем поток входящих сообщений
-//        val input = session.receive()
-//        // Формируем поток исходящих сообщений
-//        val output1 = input
-//            .map {session.textMessage("Echo $it")}
-//            .doOnComplete {
-//                // Можно выполнить логику FINISH
-//            }
-//            .onErrorComplete {
-//                // Обработка ошибок
-//                true
-//            }
-//        return@runBlocking session.send(output1)
-
 
         val mkplSess = SpringWsSessionV1(session)
         sessions.add(mkplSess)

@@ -2,6 +2,7 @@ package ru.otus.otuskotlin.marketplace.mappers.v1
 
 import ru.otus.otuskotlin.marketplace.api.v1.models.AdCreateResponse
 import ru.otus.otuskotlin.marketplace.api.v1.models.AdDeleteResponse
+import ru.otus.otuskotlin.marketplace.api.v1.models.AdInitResponse
 import ru.otus.otuskotlin.marketplace.api.v1.models.AdOffersResponse
 import ru.otus.otuskotlin.marketplace.api.v1.models.AdPermissions
 import ru.otus.otuskotlin.marketplace.api.v1.models.AdReadResponse
