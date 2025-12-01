@@ -2,6 +2,7 @@ import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import io.ktor.plugin.features.*
+import org.gradle.kotlin.dsl.registering
 import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
 
 plugins {
@@ -161,17 +162,18 @@ tasks {
     val registryPref: String? = System.getenv("CONTAINER_REGISTRY_PREF")
     val imageName = registryPref?.let { "$it/${project.name}" } ?: project.name
 
-    val dockerBuildX64Image by creating(DockerBuildImage::class) {
+    val dockerBuildX64Image by registering(DockerBuildImage::class) { ->
         group = "docker"
         dependsOn(dockerDockerfileX64)
         images.add("$imageName-x64:${rootProject.version}")
         images.add("$imageName-x64:latest")
         platform.set("linux/amd64")
     }
-    val dockerPushX64Image by creating(DockerPushImage::class) {
+    val dockerPushX64Image by registering(DockerPushImage::class) { ->
         group = "docker"
         dependsOn(dockerBuildX64Image)
-        images.set(dockerBuildX64Image.images)
+        images.add("$imageName-x64:${rootProject.version}")
+        images.add("$imageName-x64:latest")
         registryCredentials {
             username.set(registryUser)
             password.set(registryPass)
