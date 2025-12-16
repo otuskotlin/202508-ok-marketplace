@@ -1,8 +1,4 @@
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
-import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import io.ktor.plugin.features.*
-import org.gradle.kotlin.dsl.registering
 import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
 
 plugins {
@@ -10,8 +6,7 @@ plugins {
     id("build-kmp")
 //    id("io.ktor.plugin")
     alias(libs.plugins.ktor)
-//    id("com.bmuschko.docker-remote-api") - Универсальный плагин для докера
-    alias(libs.plugins.muschko.remote)
+    id("build-docker")
 }
 
 application {
@@ -21,15 +16,21 @@ application {
 ktor {
     configureNativeImage(project)
     docker {
-        localImageName.set(project.name)
+        localImageName.set("${project.name}-jvm")
         imageTag.set(project.version.toString())
         jreVersion.set(JavaVersion.VERSION_21)
     }
 }
 
 jib {
-    from.image = "eclipse-temurin:21-jre"
     container.mainClass = application.mainClass.get()
+}
+
+docker {
+    buildContext = project.layout.buildDirectory.dir("docker-x64").get().toString()
+    imageName = "${project.name}-x64"
+    dockerFile = "Dockerfile"
+    imageTag = "${project.version}"
 }
 
 kotlin {
@@ -78,9 +79,9 @@ kotlin {
 
                 // logging
                 implementation(project(":ok-marketplace-api-log1"))
-                implementation("ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-logging-common")
-                implementation("ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-logging-kermit")
-                implementation("ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-logging-socket")
+                implementation(libs.mkpl.logs.common)
+                implementation(libs.mkpl.logs.kermit)
+                implementation(libs.mkpl.logs.socket)
             }
         }
 
@@ -107,11 +108,11 @@ kotlin {
                 implementation(libs.logback)
 
                 // transport models
-                implementation(project(":ok-marketplace-api-v1-jackson"))
-                implementation(project(":ok-marketplace-api-v1-mappers"))
+                implementation(projects.okMarketplaceApiV1Jackson)
+                implementation(projects.okMarketplaceApiV1Mappers)
+                implementation(projects.okMarketplaceApiV2Kmp)
 
                 implementation("ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-logging-logback")
-
             }
         }
 
@@ -120,6 +121,9 @@ kotlin {
                 implementation(kotlin("test-junit"))
             }
         }
+
+        linuxX64Main {
+        }
     }
 }
 
@@ -127,57 +131,34 @@ tasks {
     shadowJar {
         isZip64 = true
     }
+    distTar {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+    distZip {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
 
     // Если ошибка: "Entry application.yaml is a duplicate but no duplicate handling strategy has been set."
     // Возникает из-за наличия файлов как в common, так и в jvm платформе
     withType(ProcessResources::class) {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
     val linkReleaseExecutableLinuxX64 by getting(KotlinNativeLink::class)
     val nativeFileX64 = linkReleaseExecutableLinuxX64.binary.outputFile
     val linuxX64ProcessResources by getting(ProcessResources::class)
-
-    val dockerDockerfileX64 by creating(Dockerfile::class) {
+    dockerBuild {
         dependsOn(linkReleaseExecutableLinuxX64)
         dependsOn(linuxX64ProcessResources)
         group = "docker"
-        from(Dockerfile.From("ubuntu:22.04").withPlatform("linux/amd64"))
         doFirst {
             copy {
+                from("Dockerfile") //.rename { "Dockerfile" }
                 from(nativeFileX64)
                 from(linuxX64ProcessResources.destinationDir)
-                into("${this@creating.destDir.get()}")
+                println("BUILD CONTEXT: ${buildContext.get()}")
+                into(buildContext)
             }
-        }
-        copyFile(nativeFileX64.name, "/app/")
-        copyFile("application.yaml", "/app/")
-        exposePort(8080)
-        workingDir("/app")
-        entryPoint("/app/${nativeFileX64.name}", "-config=./application.yaml")
-    }
-    val registryUser: String? = System.getenv("CONTAINER_REGISTRY_USER")
-    val registryPass: String? = System.getenv("CONTAINER_REGISTRY_PASS")
-    val registryHost: String? = System.getenv("CONTAINER_REGISTRY_HOST")
-    val registryPref: String? = System.getenv("CONTAINER_REGISTRY_PREF")
-    val imageName = registryPref?.let { "$it/${project.name}" } ?: project.name
-
-    val dockerBuildX64Image by registering(DockerBuildImage::class) { ->
-        group = "docker"
-        dependsOn(dockerDockerfileX64)
-        images.add("$imageName-x64:${rootProject.version}")
-        images.add("$imageName-x64:latest")
-        platform.set("linux/amd64")
-    }
-    val dockerPushX64Image by registering(DockerPushImage::class) { ->
-        group = "docker"
-        dependsOn(dockerBuildX64Image)
-        images.add("$imageName-x64:${rootProject.version}")
-        images.add("$imageName-x64:latest")
-        registryCredentials {
-            username.set(registryUser)
-            password.set(registryPass)
-            url.set("https://$registryHost/v1/")
         }
     }
 }
