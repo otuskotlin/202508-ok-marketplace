@@ -167,7 +167,7 @@ tasks {
         group = "docker"
         doFirst {
             copy {
-                //from("Dockerfile") //.rename { "Dockerfile" }
+                from("Dockerfile") //.rename { "Dockerfile" }
                 from(nativeFileX64)
                 from(linuxX64ProcessResources.destinationDir)
                 println("BUILD CONTEXT: ${buildContext.get()}")
