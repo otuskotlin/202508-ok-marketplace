@@ -158,18 +158,18 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
-    val linkReleaseExecutableLinuxX64 by getting(KotlinNativeLink::class)
-    val nativeFileX64 = linkReleaseExecutableLinuxX64.binary.outputFile
-    val linuxX64ProcessResources by getting(ProcessResources::class)
+//    val linkReleaseExecutableLinuxX64 by getting(KotlinNativeLink::class)
+//    val nativeFileX64 = linkReleaseExecutableLinuxX64.binary.outputFile
+//    val linuxX64ProcessResources by getting(ProcessResources::class)
     dockerBuild {
-        dependsOn(linkReleaseExecutableLinuxX64)
-        dependsOn(linuxX64ProcessResources)
+//        dependsOn(linkReleaseExecutableLinuxX64)
+//        dependsOn(linuxX64ProcessResources)
         group = "docker"
         doFirst {
             copy {
                 from("Dockerfile") //.rename { "Dockerfile" }
-                from(nativeFileX64)
-                from(linuxX64ProcessResources.destinationDir)
+//                from(nativeFileX64)
+//                from(linuxX64ProcessResources.destinationDir)
                 println("BUILD CONTEXT: ${buildContext.get()}")
                 into(buildContext)
             }
