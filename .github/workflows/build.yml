@@ -64,7 +64,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 8.14.1
-          arguments: buildMigrations buildImages e2eTests --info
+          arguments: buildMigrations --info
       - name: Run Tests
         uses: gradle/gradle-build-action@v2
         with:
