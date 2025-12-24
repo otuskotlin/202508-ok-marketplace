@@ -134,9 +134,9 @@ kotlin {
         }
 
         linuxX64Main {
-            dependencies {
-                implementation(projects.okMarketplaceRepoPgntv)
-            }
+//            dependencies {
+//                implementation(projects.okMarketplaceRepoPgntv)
+//            }
         }
     }
 }
