@@ -131,6 +131,9 @@ mkpl-logs-kermit = { module = "ru.otus.otuskotlin.marketplace.libs:ok-marketplac
 mkpl-logs-logback = { module = "ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-logging-logback", version.ref = "mkpl" }
 mkpl-logs-socket = { module = "ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-logging-socket", version.ref = "mkpl" }
 mkpl-cor = { module = "ru.otus.otuskotlin.marketplace.libs:ok-marketplace-lib-cor", version.ref = "mkpl" }
+mkpl-state-common = { module = "ru.otus.otuskotlin.marketplace.state:ok-marketplace-states-common", version.ref = "mkpl" }
+mkpl-state-biz = { module = "ru.otus.otuskotlin.marketplace.state:ok-marketplace-states-biz", version.ref = "mkpl" }
+
 
 [bundles]
 exposed = ["db-exposed-core", "db-exposed-dao", "db-exposed-jdbc"]
@@ -142,7 +145,7 @@ kotest = ["kotest-junit5", "kotest-core", "kotest-property"]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 openapi-generator = { id = "org.openapi.generator", version.ref = "openapi-generator" }
-crowdproj-generator = { id = "com.crowdproj.generator", version = "0.3.0" }
+crowdproj-generator = { id = "com.crowdproj.generator", version = "0.4.0" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 shadowJar = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
