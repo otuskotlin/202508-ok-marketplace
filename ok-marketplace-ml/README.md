@@ -10,9 +10,9 @@
 
 # Токенизация
 
-embadding - vector: 0.1, 0.6, 1.2 
+embedding - vector: 0.1, 0.6, 1.2 
 
-Text -> Embadding
+Text -> Embedding
 
 Text -> Демо-нстра-ция<SPACE>ис-поль-зован-ия<COMMA>
 Демо->0->1
